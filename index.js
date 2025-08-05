@@ -41,3 +41,18 @@ app.post('/api/transactions', async (req, res) => {
     }
 });
 
+app.get('/api/transactions', async (req, res) => {
+    try{
+        const allTransactions = await prisma.transaction.findMany({
+            orderBy: {
+                date: 'desc',
+            },
+        });
+
+        res.status(200).json(allTransactions);
+    } catch (error) {
+        console.error("Error al obtener las transacciones:", error);
+        res.status(500).json({error: 'No se pudieron obtener las listas de transacciones'});
+    }
+});
+
