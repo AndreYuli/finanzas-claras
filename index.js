@@ -56,3 +56,25 @@ app.get('/api/transactions', async (req, res) => {
     }
 });
 
+app.delete('/api/transactions/:id', async (req, res) => {
+    try{
+        const {id} = req.params;
+
+        await prisma.transaction.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+
+        // Cambia req.status por res.status
+        res.status(200).json({message: 'Transacción eliminada correctamente'});
+    } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json({error: 'La transaccion con el ID especificado no existe.'});
+        }
+
+        console.error('Error al eliminar la transacción:', error);
+        res.status(500).json({error: 'No se pudo eliminar la transacción'});
+    }
+});
+
