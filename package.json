@@ -1,0 +1,23 @@
+{
+  "name": "finanzas-claras",
+  "version": "1.0.0",
+  "description": "Permitir a un usuario registrar sus ingresos y gastos de forma manual, categorizarlos y visualizar un resumen claro de su situación financiera. El valor no está en la automatización, sino en el acto consciente de registrar, lo que genera un mayor conocimiento de los propios hábitos financieros.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndreYuli/finanzas-claras.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndreYuli/finanzas-claras/issues"
+  },
+  "homepage": "https://github.com/AndreYuli/finanzas-claras#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
