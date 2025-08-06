@@ -1,7 +1,11 @@
 const express = require('express');
-const app = express(); // Mueve esta línea arriba
+const cors = require('cors');
+
+const app = express();
 
 app.use(express.json());    
+app.use(cors());
+
 
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();

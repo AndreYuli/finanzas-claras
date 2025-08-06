@@ -19,6 +19,7 @@
   "homepage": "https://github.com/AndreYuli/finanzas-claras#readme",
   "dependencies": {
     "@prisma/client": "^6.13.0",
+    "cors": "^2.8.5",
     "express": "^5.1.0"
   },
   "devDependencies": {
