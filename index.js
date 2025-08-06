@@ -78,3 +78,35 @@ app.delete('/api/transactions/:id', async (req, res) => {
     }
 });
 
+app.put('/api/transactions/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {description, amount, category, date, type} = req.body;
+
+        if (!description || !amount || !type) {
+            return res.status(400).json({error: 'Descripción, monto y tipo son campos requeridos.'});
+        }
+
+        const updatedTransaction = await prisma.transaction.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: {
+                description,
+                amount,
+                category,
+                date: new Date(date),
+                type,
+            },
+        });
+
+        res.status(200).json(updatedTransaction);
+    } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json({error: 'La transacción con el ID especificado no existe.'});
+        }
+
+        console.error('Error al actualizar la transacción:', error);
+        res.status(500).json({error: 'No se pudo actualizar la transacción'});
+    }
+});
