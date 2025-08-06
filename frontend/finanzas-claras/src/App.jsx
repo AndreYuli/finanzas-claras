@@ -101,7 +101,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <main className='container'>
       <h1>FinanzasClaras</h1>
 
       <form onSubmit={handleSubmit}>
@@ -161,24 +161,28 @@ function App() {
                   <option value="INCOME">Ingreso</option>
                 </select>
                 {/* CORRECCIÓN: Botón bien escrito y pasando el id */}
-                <button onClick={() => handleSave(tx.id)}>Guardar</button>
-                <button onClick={handleCancel}>Cancelar</button>
+                <button className= "secondary outline" onClick={() => handleSave(tx.id)}>Guardar</button>
+                <button className= "contrast outline" onClick={handleCancel}>Cancelar</button>
               </div>
             ) : (
-              <>
-                {tx.description}: ${tx.amount} ({tx.type})
-                <button onClick={() => handleEdit(tx)} style={{ marginLeft: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between',alignItems: 'center',width: '100%' }}>
+                <span>
+                   {tx.description}: ${tx.amount} ({tx.type})
+                </span>
+                <span>
+                  <button className = "secondary outline "onClick={() => handleEdit(tx)}>
                   Editar
                 </button>
-                <button onClick={() => handleDelete(tx.id)} style={{ marginLeft: '10px' }}>
+                <button className = "contrast outline" onClick={() => handleDelete(tx.id)} style={{ marginLeft: '10px' }}>
                   Eliminar
                 </button>
-              </>
+                </span>
+              </div>
             )}
           </li>
         ))}
       </ul>
-    </>
+    </main>
   );
 }
 
