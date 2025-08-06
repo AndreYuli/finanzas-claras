@@ -114,3 +114,35 @@ app.put('/api/transactions/:id', async (req, res) => {
         res.status(500).json({error: 'No se pudo actualizar la transacción'});
     }
 });
+
+app.get('/api/transactions/balance', async (req, res) => {
+    try{
+        const incomeResult = await prisma.transaction.aggregate({
+            _sum:{
+                amount: true,
+            },
+            where: {
+                type: 'INCOME',
+            },
+        });
+
+        const expenseResult = await prisma.transaction.aggregate({
+            _sum: {
+                amount: true,
+            },
+            where: {
+                type: 'EXPENSE',
+            },
+        });
+
+        const totalIncome = incomeResult._sum.amount || 0;
+        const totalExpense = expenseResult._sum.amount || 0;
+
+        const balance = Number(totalIncome) - Number(totalExpense);
+
+        res.status(200).json({balance});
+      }catch (error) {
+        console.error('Error al calcular el balance:', error);
+        res.status(500).json({error: 'No se pudo calcular el balance'});
+      }
+      });

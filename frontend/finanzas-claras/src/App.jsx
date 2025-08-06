@@ -10,6 +10,25 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   const [editingData, setEditingData] = useState({ description: '', amount: '', type: 'EXPENSE' });
 
+  const [balance, setBalance] = useState(0);
+
+  const fetchData = () => {
+    const fetchTransactions = fetch('http://localhost:3001/api/transactions').then(res => res.json());
+    const fetchBalance = fetch('http://localhost:3001/api/transactions/balance').then(res => res.json());
+
+    Promise.all([fetchTransactions, fetchBalance])
+    .then(([transactionsData, balanceData]) => {
+      setTransactions(transactionsData.sort((a, b) => new Date(b.date) - new Date(a.date)));
+      setBalance(balanceData.balance);
+    })
+    .catch(error => console.error('Error al obtener datos :', error));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
   const handleEdit = (tx) => {
     setEditingId(tx.id);
     setEditingData({ 
@@ -25,7 +44,7 @@ function App() {
     setEditingId(null);
   };
 
-  // CORRECCIÓN: Recibe el id como argumento
+
   const handleSave = (id) => {
     fetch(`http://localhost:3001/api/transactions/${id}`, {
       method: 'PUT',
@@ -37,6 +56,7 @@ function App() {
     })
       .then(response => response.json())
       .then(UpdatedTx => {
+        fetchData();
         setTransactions(transactions.map(tx => (tx.id === id ? UpdatedTx : tx)));
         setEditingId(null);
       })
@@ -52,6 +72,7 @@ function App() {
       method: 'DELETE',
     })
       .then(response => {
+        fetchData();
         if (response.ok) {
           setTransactions(transactions.filter(tx => tx.id !== id));
         } else {
@@ -80,6 +101,7 @@ function App() {
     })
       .then(response => response.json())
       .then(savedTransaction => {
+        fetchData();
         setTransactions([...transactions, savedTransaction]);
         setDescription('');
         setAmount('');
@@ -103,7 +125,9 @@ function App() {
   return (
     <main className='container'>
       <h1>FinanzasClaras</h1>
-
+      <h2 style={{color: balance >=0  ? 'green': 'red'}}>
+        Balance Total: ${balance.toFixed(2)}
+      </h2>
       <form onSubmit={handleSubmit}>
         <h3>Añadir nueva transacción</h3>
         <div>
