@@ -12,7 +12,12 @@ function App() {
 
   const [balance, setBalance] = useState(0);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const fetchData = () => {
+    setIsLoading(true);
+    setError(null);
     const fetchTransactions = fetch('http://localhost:3001/api/transactions').then(res => res.json());
     const fetchBalance = fetch('http://localhost:3001/api/transactions/balance').then(res => res.json());
 
@@ -20,8 +25,13 @@ function App() {
     .then(([transactionsData, balanceData]) => {
       setTransactions(transactionsData.sort((a, b) => new Date(b.date) - new Date(a.date)));
       setBalance(balanceData.balance);
+      setIsLoading(false);
     })
-    .catch(error => console.error('Error al obtener datos :', error));
+    .catch(error => {
+      console.error('Error al obtener datos :', error);
+      setError('No se pudieron cargar los datos. Por favor, inténtalo de nuevo más tarde.');
+      setIsLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -128,7 +138,12 @@ function App() {
       <h2 style={{color: balance >=0  ? 'green': 'red'}}>
         Balance Total: ${balance.toFixed(2)}
       </h2>
-      <form onSubmit={handleSubmit}>
+      {error && <p style={{ color: 'red' }}><strong>Error:</strong> {error}</p>}
+{isLoading && <p>Cargando...</p>}
+
+      <div className='grid'>
+        <section>
+          <form onSubmit={handleSubmit}>
         <h3>Añadir nueva transacción</h3>
         <div>
           <label>Descripción:</label>
@@ -159,9 +174,12 @@ function App() {
             <option value="INCOME">Ingreso</option>
           </select>
         </div>
-        <button type="submit">Añadir transacción</button>
+        <button type="submit" disabled = {isLoading}>Añadir transacción</button>
       </form>
-
+      </section>  
+      <section>
+        <h2>Mi Lista de Transacciones</h2>
+        
       <ul>
         {transactions.map(tx => (
           <li key={tx.id}>
@@ -206,6 +224,8 @@ function App() {
           </li>
         ))}
       </ul>
+      </section>
+      </div>
     </main>
   );
 }
