@@ -7,6 +7,24 @@ const [description, setDescription] = useState('')
 const [amount, setAmount] = useState('')
 const [type, setType] = useState('')
 
+const handleDelete = (id) => {
+  if (!window.confirm('¿Estás seguro de que quieres eliminar esta transacción?')) {
+    return;
+  }
+
+  fetch(`http://localhost:3001/api/transactions/${id}`, {
+    method: 'DELETE',
+  })
+  .then(response => {
+    if (response.ok) {
+      setTransactions(transactions.filter(tx => tx.id !== id));
+    } else {
+      console.error('Error al eliminar la transacción');
+    }
+  })
+  .catch(error => console.error('Error de red:', error));
+};
+
 const handleSubmit = (event) => {
   event.preventDefault();
   const newTransaction = {
@@ -91,6 +109,10 @@ const handleSubmit = (event) => {
           {transactions.map(tx =>(
             <li key={tx.id}>
               {tx.description}: ${tx.amount} ({tx.type})
+
+              <button onClick={() => handleDelete(tx.id)}style ={{marginLeft: '10px'}}>
+                Eliminar
+                </button>
             </li>
           ))}
         </ul>
