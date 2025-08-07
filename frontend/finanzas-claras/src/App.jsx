@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import ExpenseChart from './components/ExpenseChart';
 
 function App() {
   const [transactions, setTransactions] = useState([])
@@ -224,6 +225,8 @@ function App() {
           </li>
         ))}
       </ul>
+      <hr />
+      <ExpenseChart />
       </section>
       </div>
     </main>

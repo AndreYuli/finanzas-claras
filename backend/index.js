@@ -146,3 +146,28 @@ app.get('/api/transactions/balance', async (req, res) => {
         res.status(500).json({error: 'No se pudo calcular el balance'});
       }
       });
+
+app.get('/api/transactions/summary/expenses', async (req, res) => {
+    try{
+        const expenseSumary = await prisma.transaction.groupBy({
+            by: ['category'],
+            where:{
+                type: 'EXPENSE',
+            },
+            _sum: {
+                amount: true,
+            },
+            });
+
+            const formattedSummary = expenseSumary.map(item => ({
+                name: item.category,
+                value: Number(item._sum.amount),
+            }));
+
+            res.status(200).json(formattedSummary);
+        } catch (error) {
+            console.error("Error al obtener el resumen de gastos:", error);
+            res.status(500).json({error: 'No se pudo obtener el resumen de gastos'});
+
+        }
+    });
